@@ -4,6 +4,20 @@ use crate::domain::value_objects::{ValueObjectTrait, ValueObject};
 
 pub type UniqueEntityID = ValueObject<Uuid>;
 
+impl TryFrom<UniqueEntityID> for String {
+    type Error = DomainError;
+
+    fn try_from(value: UniqueEntityID) -> Result<Self, Self::Error> {
+        Ok(value.value.to_string())
+    }
+}
+
+impl From<String> for UniqueEntityID {
+    fn from(value: String) -> Self {
+        UniqueEntityID::new(Some(value.as_str())).unwrap()
+    }
+}
+
 impl ValueObjectTrait<Uuid> for UniqueEntityID {
      fn new(value: Option<&str>) -> Result<ValueObject<Uuid>, DomainError> {
         match value {
