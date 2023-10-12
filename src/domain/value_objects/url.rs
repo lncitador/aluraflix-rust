@@ -8,8 +8,19 @@ pub type UrlEntity = ValueObject<String>;
 impl TryFrom<UrlEntity> for String {
     type Error = DomainError;
 
-impl ValueObjectTrait<Uri> for UrlEntity {
-    fn new(value: Option<&str>) -> Result<ValueObject<Uri>, DomainError> {
+    fn try_from(value: UrlEntity) -> Result<Self, Self::Error> {
+        Ok(value.value.to_string())
+    }
+}
+
+impl From<String> for UrlEntity {
+    fn from(value: String) -> Self {
+        UrlEntity::new(Some(value.as_str())).unwrap()
+    }
+}
+
+impl ValueObjectTrait<String> for UrlEntity {
+    fn new(value: Option<&str>) -> Result<UrlEntity, DomainError> {
         match value {
             Some(value) => {
                 match Uri::from_str(value) {
