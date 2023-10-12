@@ -7,3 +7,6 @@ edition = "2021"
 
 [dependencies]
 uuid = { version =  "1.4.1", features = ["v7"] }
+http = "0.2.9"
+time = { version = "0.3.29", features = ["macros", "serde", "formatting", "parsing"] }
+serde = { version = "1.0.188", features = ["derive"] }
