@@ -7,7 +7,7 @@ pub struct ValueObject<T> {
 }
 
 pub trait ValueObjectTrait<T> {
-    fn new(value: &str) -> Result<ValueObject<T>, DomainError>;
+    fn new(value: Option<&str>) -> Result<ValueObject<T>, DomainError>;
     fn value(&self) -> &T;
     fn equals(&self, other: &ValueObject<T>) -> bool;
     fn to_string(&self) -> String;
