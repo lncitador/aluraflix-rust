@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:6011/aluraflix-prod
+    ports:
+      - "6010:6010"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=aluraflix-prod
+    ports:
+        - "6011:5432"
+    volumes:
+        - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
