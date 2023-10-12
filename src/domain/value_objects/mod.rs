@@ -3,6 +3,9 @@ use crate::domain::errors::domain_error::DomainError;
 pub mod unique_id;
 pub mod url;
 
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize)]
 pub struct ValueObject<T> {
     value: T,
 }
