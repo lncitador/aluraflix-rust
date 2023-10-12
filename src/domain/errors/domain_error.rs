@@ -3,8 +3,8 @@ use std::fmt;
 use std::fmt::{Debug, Display, Formatter};
 
 pub struct DomainError {
-    message: String,
-    description: Option<String>
+    pub message: String,
+    pub description: Option<String>
 }
 
 impl DomainError {
