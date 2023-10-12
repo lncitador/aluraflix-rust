@@ -5,13 +5,17 @@ use crate::domain::value_objects::{ValueObjectTrait, ValueObject};
 pub type UniqueEntityID = ValueObject<Uuid>;
 
 impl ValueObjectTrait<Uuid> for UniqueEntityID {
-     fn new(value: &str) -> Result<ValueObject<Uuid>, DomainError> {
-        if value.is_empty() {
-            Ok(ValueObject { value: Uuid::now_v7() })
-        } else {
-            match Uuid::parse_str(value) {
-                Ok(uuid) => Ok(ValueObject { value: uuid }),
-                Err(_) => Err(DomainError::new("The ID is not a valid UUID", ""))
+     fn new(value: Option<&str>) -> Result<ValueObject<Uuid>, DomainError> {
+        match value {
+            Some(value) => {
+                match Uuid::parse_str(value) {
+                    Ok(value) => Ok(ValueObject { value }),
+                    Err(_) => Err(DomainError::new("Invalid UUID", ""))
+                }
+            },
+            None => {
+                let value = Uuid::now_v7();
+                Ok(ValueObject { value })
             }
         }
     }
