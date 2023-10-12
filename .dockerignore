@@ -1,0 +1,18 @@
+# Ignore common build and temporary files
+/target/
+**/*.rs.bk
+**/*.swp
+
+# Ignore development files and directories
+.dockerignore
+.git/
+.gitignore
+.vscode/
+.idea/
+Cargo.toml.orig
+Cargo.lock.orig
+
+# Ignore editor-specific files
+*.rs.bk
+*.swp
+*~
