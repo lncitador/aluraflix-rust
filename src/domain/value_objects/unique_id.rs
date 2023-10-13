@@ -1,8 +1,15 @@
+use std::fmt::{Debug, Display, Formatter};
 use uuid::Uuid;
 use crate::domain::errors::domain_error::DomainError;
 use crate::domain::value_objects::{ValueObjectTrait, ValueObject};
 
 pub type UniqueEntityID = ValueObject<Uuid>;
+
+impl Debug for UniqueEntityID {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(&self.value, f)
+    }
+}
 
 impl TryFrom<UniqueEntityID> for String {
     type Error = DomainError;
