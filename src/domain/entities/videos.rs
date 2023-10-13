@@ -82,9 +82,25 @@ impl Videos {
         if errors.len() > 0 {
             let mut description = String::from("");
 
-            for error in errors {
-                description.push_str(error.description.as_ref().unwrap());
-                description.push_str("\n");
+            for (i, error) in errors.iter().enumerate() {
+                if i == 0 {
+                    if errors.len() == 1 {
+                        description = error.to_string();
+                    } else {
+                        description.push_str("[\n");
+                        description.push_str("  ");
+                        description.push_str(error.to_string().as_str());
+                        description.push_str(",\n");
+                    }
+                } else if i == errors.len() - 1 {
+                    description.push_str("  ");
+                    description.push_str(error.to_string().as_str());
+                    description.push_str("\n]");
+                } else {
+                    description.push_str("  ");
+                    description.push_str(error.to_string().as_str());
+                    description.push_str(",\n");
+                }
             }
 
             return Err(DomainError::new("Invalid data", description.as_str()));
