@@ -1,3 +1,4 @@
+use std::fmt::{Debug, Display, Formatter};
 use lazy_static::lazy_static;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
@@ -10,7 +11,7 @@ lazy_static! {
     ).unwrap();
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub enum Color {
     RGB {
         red: u8,
@@ -54,6 +55,12 @@ impl ToString for Color {
 }
 
 pub type ColorEntity = ValueObject<Color>;
+
+impl Debug for ColorEntity {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(&self.value.to_string(), f)
+    }
+}
 
 impl TryFrom<ColorEntity> for String {
     type Error = DomainError;
