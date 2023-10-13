@@ -3,6 +3,7 @@ use crate::domain::errors::domain_error::DomainError;
 
 pub mod unique_id;
 pub mod url;
+pub mod color;
 
 use serde::{Serialize, Deserialize};
 
