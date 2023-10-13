@@ -1,3 +1,4 @@
+use std::fmt::{Debug, Display, Formatter};
 use lazy_static::lazy_static;
 use crate::domain::errors::domain_error::DomainError;
 use crate::domain::value_objects::{ValueObject, ValueObjectTrait};
@@ -10,6 +11,12 @@ lazy_static! {
 }
 
 pub type UrlEntity = ValueObject<String>;
+
+impl Debug for UrlEntity {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(&self.value, f)
+    }
+}
 
 impl TryFrom<UrlEntity> for String {
     type Error = DomainError;
