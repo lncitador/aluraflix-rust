@@ -1,4 +1,6 @@
 use lazy_static::lazy_static;
+use regex::Regex;
+use serde::{Deserialize, Serialize};
 use crate::domain::errors::domain_error::DomainError;
 use crate::domain::value_objects::{ValueObject, ValueObjectTrait};
 
@@ -67,14 +69,65 @@ impl From<String> for ColorEntity {
     }
 }
 
-impl ValueObjectTrait<String> for ColorEntity {
+impl ValueObjectTrait<Color> for ColorEntity {
     fn new(value: Option<&str>) -> Result<ColorEntity, DomainError> {
         match value {
             Some(value) => {
                 if COLOR_REGEX.is_match(value) {
-                    Ok(ColorEntity {
-                        value: value.to_string()
-                    })
+                    match value {
+                        "transparent" => Ok(ColorEntity { value: Color::Transparent }),
+                        _ => {
+                            let value = value.to_string();
+
+                            if value.starts_with("#") {
+                                if value.len() == 4 {
+                                    Ok(ColorEntity { value: Color::Hex3(value) })
+                                } else {
+                                    Ok(ColorEntity { value: Color::Hex6(value) })
+                                }
+                            } else if value.starts_with("rgb") {
+                                let rgb = value.replace("rgb", "").replace("(", "").replace(")", "").replace(" ", "");
+                                let rgb: Vec<&str> = rgb.split(",").collect();
+
+                                let red = rgb[0].parse::<u8>().unwrap();
+                                let green = rgb[1].parse::<u8>().unwrap();
+                                let blue = rgb[2].parse::<u8>().unwrap();
+
+                                Ok(ColorEntity { value: Color::RGB { red, green, blue } })
+                            } else if value.starts_with("rgba") {
+                                let rgba = value.replace("rgba", "").replace("(", "").replace(")", "").replace(" ", "");
+                                let rgba: Vec<&str> = rgba.split(",").collect();
+
+                                let red = rgba[0].parse::<u8>().unwrap();
+                                let green = rgba[1].parse::<u8>().unwrap();
+                                let blue = rgba[2].parse::<u8>().unwrap();
+                                let alpha = rgba[3].parse::<f64>().unwrap();
+
+                                Ok(ColorEntity { value: Color::RGBA { red, green, blue, alpha } })
+                            } else if value.starts_with("hsl") {
+                                let hsl = value.replace("hsl", "").replace("(", "").replace(")", "").replace(" ", "");
+                                let hsl: Vec<&str> = hsl.split(",").collect();
+
+                                let hue = hsl[0].parse::<u16>().unwrap();
+                                let saturation = hsl[1].parse::<u8>().unwrap();
+                                let lightness = hsl[2].parse::<u8>().unwrap();
+
+                                Ok(ColorEntity { value: Color::HSL { hue, saturation, lightness } })
+                            } else if value.starts_with("hsla") {
+                                let hsla = value.replace("hsla", "").replace("(", "").replace(")", "").replace(" ", "");
+                                let hsla: Vec<&str> = hsla.split(",").collect();
+
+                                let hue = hsla[0].parse::<u16>().unwrap();
+                                let saturation = hsla[1].parse::<u8>().unwrap();
+                                let lightness = hsla[2].parse::<u8>().unwrap();
+                                let alpha = hsla[3].parse::<f64>().unwrap();
+
+                                Ok(ColorEntity { value: Color::HSLA { hue, saturation, lightness, alpha } })
+                            } else {
+                                Err(DomainError::new("Invalid color", ""))
+                            }
+                        }
+                    }
                 } else {
                     Err(DomainError::new("Invalid color", ""))
                 }
@@ -83,12 +136,12 @@ impl ValueObjectTrait<String> for ColorEntity {
         }
     }
 
-    fn value(&self) -> &String {
+    fn value(&self) -> &Color {
         &self.value
     }
 
     fn equals(&self, other: &ColorEntity) -> bool {
-        &self.value == other.value()
+        todo!()
     }
 
     fn to_string(&self) -> String {
