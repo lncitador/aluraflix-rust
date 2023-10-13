@@ -1,6 +1,6 @@
 use crate::domain::value_objects::unique_id::UniqueEntityID;
 use crate::domain::value_objects::url::UrlEntity;
-use crate::domain::errors::domain_error::DomainError;
+use crate::domain::errors::domain_error::{as_descriptions, DomainError};
 
 use time::{Date, OffsetDateTime};
 use serde::{Serialize, Deserialize};
@@ -80,31 +80,11 @@ impl Videos {
         };
 
         if errors.len() > 0 {
-            let mut description = String::from("");
-
-            for (i, error) in errors.iter().enumerate() {
-                if i == 0 {
-                    if errors.len() == 1 {
-                        description = error.to_string();
-                    } else {
-                        description.push_str("[\n");
-                        description.push_str("  ");
-                        description.push_str(error.to_string().as_str());
-                        description.push_str(",\n");
-                    }
-                } else if i == errors.len() - 1 {
-                    description.push_str("  ");
-                    description.push_str(error.to_string().as_str());
-                    description.push_str("\n]");
-                } else {
-                    description.push_str("  ");
-                    description.push_str(error.to_string().as_str());
-                    description.push_str(",\n");
-                }
-            }
+            let description = as_descriptions(errors);
 
             return Err(DomainError::new("Invalid data", description.as_str()));
         }
+
 
         let now = OffsetDateTime::now_utc().date();
 
