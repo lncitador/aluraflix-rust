@@ -15,7 +15,7 @@ pub struct VideosInput {
     pub user_id: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Videos {
     pub id: UniqueEntityID,
     pub title: String,
@@ -28,7 +28,7 @@ pub struct Videos {
 }
 
 impl Videos {
-    pub fn new(&mut self, data: &VideosInput) -> Result<Self, DomainError> {
+    pub fn new(data: &VideosInput) -> Result<Self, DomainError> {
         let mut errors: Vec<DomainError> = vec![];
 
         let title = match data.title.len() {
