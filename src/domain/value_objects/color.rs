@@ -8,7 +8,50 @@ lazy_static! {
     ).unwrap();
 }
 
-pub type ColorEntity = ValueObject<String>;
+#[derive(Debug, Serialize, Deserialize)]
+pub enum Color {
+    RGB {
+        red: u8,
+        green: u8,
+        blue: u8,
+    },
+    RGBA {
+        red: u8,
+        green: u8,
+        blue: u8,
+        alpha: f64,
+    },
+    Transparent,
+    Hex3(String),
+    Hex6(String),
+    HSL {
+        hue: u16,
+        saturation: u8,
+        lightness: u8,
+    },
+    HSLA {
+        hue: u16,
+        saturation: u8,
+        lightness: u8,
+        alpha: f64,
+    },
+}
+
+impl ToString for Color {
+    fn to_string(&self) -> String {
+        match self {
+            Color::RGB { red, green, blue } => format!("rgb({}, {}, {})", red, green, blue),
+            Color::RGBA { red, green, blue, alpha } => format!("rgba({}, {}, {}, {})", red, green, blue, alpha),
+            Color::Transparent => String::from("transparent"),
+            Color::Hex3(value) => value.to_string(),
+            Color::Hex6(value) => value.to_string(),
+            Color::HSL { hue, saturation, lightness } => format!("hsl({}, {}%, {}%)", hue, saturation, lightness),
+            Color::HSLA { hue, saturation, lightness, alpha } => format!("hsla({}, {}%, {}%, {})", hue, saturation, lightness, alpha),
+        }
+    }
+}
+
+pub type ColorEntity = ValueObject<Color>;
 
 impl TryFrom<ColorEntity> for String {
     type Error = DomainError;
