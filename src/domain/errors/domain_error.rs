@@ -36,7 +36,7 @@ impl Debug for DomainError {
     }
 }
 
-pub fn as_description(errors: Vec<DomainError>) -> String {
+pub fn as_descriptions(errors: Vec<DomainError>) -> String {
     let mut description = String::from("");
 
     for (i, error) in errors.iter().enumerate() {
