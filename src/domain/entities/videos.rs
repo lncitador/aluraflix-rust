@@ -1,3 +1,4 @@
+use std::fmt::{Debug};
 use crate::domain::value_objects::unique_id::UniqueEntityID;
 use crate::domain::value_objects::url::UrlEntity;
 use crate::domain::errors::domain_error::{as_descriptions, DomainError};
