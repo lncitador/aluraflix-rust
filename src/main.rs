@@ -6,6 +6,8 @@ use crate::domain::value_objects::unique_id::UniqueEntityID;
 use crate::domain::value_objects::ValueObjectTrait;
 
 mod domain;
+mod application;
+mod infrastructure;
 
 fn main() {
     let database_url = env::var("DATABASE_URL")
