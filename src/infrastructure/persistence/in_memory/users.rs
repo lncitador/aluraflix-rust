@@ -9,7 +9,7 @@ pub struct UsersRepositoryInMemory {
 }
 
 impl UsersRepositoryInMemory {
-    pub fn new() -> Self {
+    pub fn new() ->Self {
         Self { users: vec![] }
     }
 
