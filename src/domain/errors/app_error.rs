@@ -14,6 +14,14 @@ impl AppError {
             code,
         }
     }
+
+    pub fn message(&self) -> &str {
+        &self.message
+    }
+
+    pub fn code(&self) -> u32 {
+        self.code
+    }
 }
 
 impl Error for AppError {}
