@@ -1,6 +1,7 @@
 use std::fmt::{Debug, Display, Formatter};
 use regex::Regex;
 use lazy_static::lazy_static;
+use serde::{Deserialize, Serialize};
 use crate::domain::errors::domain_error::DomainError;
 use crate::domain::value_objects::{ValueObject, ValueObjectTrait};
 
@@ -10,6 +11,7 @@ lazy_static! {
     ).unwrap();
 }
 
+#[derive(Serialize, Deserialize)]
 pub enum Email {
     Email(String)
 }
