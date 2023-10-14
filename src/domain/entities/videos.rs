@@ -29,7 +29,7 @@ pub struct Videos {
 }
 
 impl Videos {
-    pub fn new(data: &VideosInput) -> Result<Self, DomainError> {
+    pub fn new(data: &VideosInput) -> Result<&Self, DomainError> {
         let mut errors: Vec<DomainError> = vec![];
 
         let title = match data.title.len() {
@@ -89,7 +89,7 @@ impl Videos {
 
         let now = OffsetDateTime::now_utc().date();
 
-        Ok(Videos {
+        Ok(&Videos {
             id: UniqueEntityID::new(None).unwrap(),
             title: title.unwrap(),
             description: description.unwrap(),
