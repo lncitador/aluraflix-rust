@@ -13,7 +13,7 @@ pub struct CategoriesInput {
     pub user_id: String,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Categories {
     pub id: UniqueEntityID,
     pub name: String,

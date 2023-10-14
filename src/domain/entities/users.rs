@@ -12,7 +12,7 @@ pub struct UsersInput {
     pub password: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Users {
     pub id: UniqueEntityID,
     pub name: String,

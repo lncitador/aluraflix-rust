@@ -16,7 +16,7 @@ pub struct VideosInput {
     pub user_id: String,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Videos {
     pub id: UniqueEntityID,
     pub title: String,
