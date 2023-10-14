@@ -1,13 +1,40 @@
+use std::fmt::Debug;
+use crate::domain::errors::domain_error::DomainError;
 use crate::domain::value_objects::unique_id::UniqueEntityID;
 
 pub mod videos;
 pub mod categories;
 pub mod users;
 
+pub enum RepositoryError {
+    NotFound(String),
+    AlreadyExists(String),
+    Domain(DomainError),
+}
+
+impl From<RepositoryError> for DomainError {
+    fn from(error: RepositoryError) -> Self {
+        match error {
+            RepositoryError::NotFound(message) => DomainError::new("Not found", &message),
+            RepositoryError::AlreadyExists(message) => DomainError::new("Already exists", &message),
+            RepositoryError::Domain(error) => error,
+        }
+    }
+}
+
+impl Debug for RepositoryError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            RepositoryError::NotFound(message) => write!(f, "Not found: {}", message),
+            RepositoryError::AlreadyExists(message) => write!(f, "Already exists: {}", message),
+            RepositoryError::Domain(error) => write!(f, "{:?}", error),
+        }
+    }
+}
 
 pub trait Repository<T> {
     fn find_all(&self) -> Vec<T>;
-    fn find_by_id(&self, id: UniqueEntityID) -> Option<T>;
-    fn save(&mut self, entity: T);
-    fn delete(&mut self, id: UniqueEntityID) -> bool;
+    fn find_by_id(&self, id: UniqueEntityID) -> Result<T, RepositoryError>;
+    fn save(&mut self, entity: T) -> Result<T, RepositoryError>;
+    fn delete(&mut self, id: UniqueEntityID) -> Result<(), RepositoryError>;
 }
