@@ -1,16 +1,19 @@
 use std::error::Error;
 use std::fmt;
 use std::fmt::{Debug, Display, Formatter};
+use crate::domain::errors::domain_error::DomainError;
 
 pub struct AppError {
     message: String,
+    domain: Option<DomainError>,
     code: u32,
 }
 
 impl AppError {
-    pub fn new(message: &str, code: u32) -> AppError {
+    pub fn new(message: &str, code: u32, domain: Option<DomainError>) -> AppError {
         AppError {
             message: message.to_string(),
+            domain,
             code,
         }
     }
