@@ -148,7 +148,7 @@ impl ValueObjectTrait<Color> for ColorEntity {
     }
 
     fn equals(&self, other: &ColorEntity) -> bool {
-        todo!()
+        self.value.to_string() == other.value.to_string()
     }
 
     fn to_string(&self) -> String {
