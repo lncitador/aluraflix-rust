@@ -11,7 +11,7 @@ lazy_static! {
     ).unwrap();
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub enum Color {
     RGB {
         red: u8,

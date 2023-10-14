@@ -7,7 +7,7 @@ pub mod email;
 
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, PartialEq, Clone)]
 pub struct ValueObject<T> {
     value: T,
 }

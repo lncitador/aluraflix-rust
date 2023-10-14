@@ -11,7 +11,7 @@ lazy_static! {
     ).unwrap();
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub enum Email {
     Email(String)
 }
