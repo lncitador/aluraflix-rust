@@ -1,4 +1,3 @@
-use std::fmt::Debug;
 use crate::domain::errors::domain_error::DomainError;
 
 pub mod unique_id;
