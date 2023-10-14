@@ -3,6 +3,7 @@ use crate::application::repositories::videos::VideosRepository;
 use crate::domain::entities::videos::{Videos};
 use crate::domain::value_objects::unique_id::UniqueEntityID;
 
+#[derive(Clone)]
 pub struct VideosRepositoryInMemory {
     pub videos: Vec<Videos>,
 }
