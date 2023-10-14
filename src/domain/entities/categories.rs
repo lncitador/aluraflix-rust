@@ -24,7 +24,7 @@ pub struct Categories {
 }
 
 impl Categories {
-    pub fn new(data: &CategoriesInput) -> Result<&Self, DomainError> {
+    pub fn new(data: &CategoriesInput) -> Result<Self, DomainError> {
         let mut errors: Vec<DomainError> = vec![];
 
         let name = match data.name.len() {
@@ -64,7 +64,7 @@ impl Categories {
 
         let now = OffsetDateTime::now_utc().date();
 
-        Ok(&Categories {
+        Ok(Categories {
             id: UniqueEntityID::new(None).unwrap(),
             name: name.unwrap(),
             color: color.unwrap(),
