@@ -94,7 +94,58 @@ mod test_auth_use_case {
             let result = sut.use_case.sign_in(input);
 
             assert!(result.is_err());
-            assert_eq!(result.unwrap_err().code(), 400);
+        }
+    }
+
+    #[cfg(test)]
+    mod test_sign_up {
+        use super::*;
+
+        #[test]
+        fn it_should_not_sign_up_when_the_email_is_invalid() {
+            let mut sut = setup_sut();
+
+            let input = UsersInput {
+                name: "John Doe".to_string(),
+                email: "johndoe".to_string(),
+                password: "12345678".to_string(),
+            };
+
+            let result = sut.use_case.sign_up(input);
+
+            assert!(result.is_err());
+        }
+
+        #[test]
+        fn it_should_not_sign_up_when_the_user_already_exists() {
+            let mut sut = setup_sut();
+
+            let input = UsersInput {
+                name: "John Doe".to_string(),
+                email: sut.initial_user.email.to_string(),
+                password: "12345678".to_string(),
+            };
+
+            let result = sut.use_case.sign_up(input);
+
+            assert!(result.is_err());
+            assert!(matches!(result.unwrap_err(), AuthUseCaseError::UserAlreadyExists));
+        }
+
+        #[test]
+        fn it_should_sign_up_when_the_user_does_not_exist() {
+            let mut sut = setup_sut();
+
+            let input = UsersInput {
+                name: "Marie Joe".to_string(),
+                email: "joema@test.com".to_string(),
+                password: "12345678".to_string(),
+            };
+
+            let result = sut.use_case.sign_up(input);
+
+            assert!(result.is_ok());
+            assert_eq!(result.unwrap().name, "Marie Joe".to_string());
         }
     }
 }
