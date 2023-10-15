@@ -1,4 +1,5 @@
 use std::fmt::Debug;
+use async_trait::async_trait;
 use crate::domain::errors::domain_error::DomainError;
 use crate::domain::value_objects::unique_id::UniqueEntityID;
 
@@ -32,9 +33,10 @@ impl Debug for RepositoryError {
     }
 }
 
+#[async_trait]
 pub trait Repository<T> {
-    fn find_all(&self) -> Vec<T>;
-    fn find_by_id(&self, id: UniqueEntityID) -> Result<T, RepositoryError>;
-    fn save(&mut self, entity: T) -> Result<T, RepositoryError>;
-    fn delete(&mut self, id: UniqueEntityID) -> Result<(), RepositoryError>;
+    async fn find_all(&self) -> Vec<T>;
+    async fn find_by_id(&self, id: UniqueEntityID) -> Result<T, RepositoryError>;
+    async fn save(&mut self, entity: T) -> Result<T, RepositoryError>;
+    async fn delete(&mut self, id: UniqueEntityID) -> Result<(), RepositoryError>;
 }
