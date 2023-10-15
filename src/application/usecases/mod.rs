@@ -1,2 +1,4 @@
 pub mod authentication;
-mod test_authentication;
+pub mod videos;
+
+mod ___tests___;
