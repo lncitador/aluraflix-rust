@@ -92,7 +92,7 @@ impl ValueObjectTrait<Color> for ColorEntity {
                                 } else {
                                     Ok(ColorEntity { value: Color::Hex6(value) })
                                 }
-                            } else if value.starts_with("rgb") {
+                            } else if value.starts_with("rgb") && !value.starts_with("rgba") {
                                 let rgb = value.replace("rgb", "").replace("(", "").replace(")", "").replace(" ", "");
                                 let rgb: Vec<&str> = rgb.split(",").collect();
 
@@ -111,8 +111,8 @@ impl ValueObjectTrait<Color> for ColorEntity {
                                 let alpha = rgba[3].parse::<f64>().unwrap();
 
                                 Ok(ColorEntity { value: Color::RGBA { red, green, blue, alpha } })
-                            } else if value.starts_with("hsl") {
-                                let hsl = value.replace("hsl", "").replace("(", "").replace(")", "").replace(" ", "");
+                            } else if value.starts_with("hsl") && !value.starts_with("hsla") {
+                                let hsl = value.replace("hsl", "").replace("(", "").replace(")", "").replace(" ", "").replace("%", "");
                                 let hsl: Vec<&str> = hsl.split(",").collect();
 
                                 let hue = hsl[0].parse::<u16>().unwrap();
@@ -121,7 +121,7 @@ impl ValueObjectTrait<Color> for ColorEntity {
 
                                 Ok(ColorEntity { value: Color::HSL { hue, saturation, lightness } })
                             } else if value.starts_with("hsla") {
-                                let hsla = value.replace("hsla", "").replace("(", "").replace(")", "").replace(" ", "");
+                                let hsla = value.replace("hsla", "").replace("(", "").replace(")", "").replace(" ", "").replace("%", "");
                                 let hsla: Vec<&str> = hsla.split(",").collect();
 
                                 let hue = hsla[0].parse::<u16>().unwrap();
