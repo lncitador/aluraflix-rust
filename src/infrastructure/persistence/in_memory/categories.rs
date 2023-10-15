@@ -1,5 +1,5 @@
 use crate::application::repositories::categories::CategoriesRepository;
-use crate::application::repositories::Repository;
+use crate::application::repositories::{Repository, RepositoryError};
 use crate::domain::entities::categories::Categories;
 use crate::domain::value_objects::unique_id::UniqueEntityID;
 
@@ -27,18 +27,31 @@ impl Repository<Categories> for CategoriesRepositoryInMemory {
         self.categories.clone()
     }
 
-    fn find_by_id(&self, id: UniqueEntityID) -> Option<Categories> {
-        self.categories.iter().find(|v| v.id == id).cloned()
+    fn find_by_id(&self, id: UniqueEntityID) -> Result<Categories, RepositoryError> {
+        match self.categories.iter().find(|v| v.id == id) {
+            Some(category) => Ok(category.clone()),
+            None => Err(RepositoryError::NotFound("Category not found".to_string())),
+        }
     }
 
-    fn save(&mut self, entity: Categories) {
-        self.categories.push(entity);
+    fn save(&mut self, entity: Categories) -> Result<Categories, RepositoryError> {
+        match self.categories.iter().find(|v| v.id == entity.id) {
+            Some(_) => Err(RepositoryError::AlreadyExists("Category already exists".to_string())),
+            None => {
+                self.categories.push(entity.clone());
+                Ok(entity)
+            }
+        }
     }
 
-    fn delete(&mut self, id: UniqueEntityID) -> bool {
+    fn delete(&mut self, id: UniqueEntityID) -> Result<(), RepositoryError> {
         let len = self.len();
         self.categories.retain(|v| v.id != id);
-        len != self.len()
+        if len != self.len() {
+            Ok(())
+        } else {
+            Err(RepositoryError::NotFound("Category not found".to_string()))
+        }
     }
 }
 

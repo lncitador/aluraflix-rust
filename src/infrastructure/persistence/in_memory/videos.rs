@@ -1,4 +1,4 @@
-use crate::application::repositories::Repository;
+use crate::application::repositories::{Repository, RepositoryError};
 use crate::application::repositories::videos::VideosRepository;
 use crate::domain::entities::videos::{Videos};
 use crate::domain::value_objects::unique_id::UniqueEntityID;
@@ -27,18 +27,31 @@ impl Repository<Videos> for VideosRepositoryInMemory {
         self.videos.clone()
     }
 
-    fn find_by_id(&self, id: UniqueEntityID) -> Option<Videos> {
-        self.videos.iter().find(|v| v.id == id).cloned()
+    fn find_by_id(&self, id: UniqueEntityID) -> Result<Videos, RepositoryError> {
+        match self.videos.iter().find(|v| v.id == id) {
+            Some(video) => Ok(video.clone()),
+            None => Err(RepositoryError::NotFound("Video not found".to_string())),
+        }
     }
 
-    fn save(&mut self, entity: Videos) {
-        self.videos.push(entity);
+    fn save(&mut self, entity: Videos) -> Result<Videos, RepositoryError> {
+        match self.videos.iter().find(|v| v.id == entity.id) {
+            Some(_) => Err(RepositoryError::AlreadyExists("Video already exists".to_string())),
+            None => {
+                self.videos.push(entity.clone());
+                Ok(entity)
+            }
+        }
     }
 
-    fn delete(&mut self, id: UniqueEntityID) -> bool {
+    fn delete(&mut self, id: UniqueEntityID) -> Result<(), RepositoryError> {
         let len = self.len();
         self.videos.retain(|v| v.id != id);
-        len != self.len()
+        if len != self.len() {
+            Ok(())
+        } else {
+            Err(RepositoryError::NotFound("Video not found".to_string()))
+        }
     }
 }
 
