@@ -1,3 +1,4 @@
+use async_trait::async_trait;
 use crate::application::repositories::{Repository, RepositoryError};
 use crate::application::repositories::users::UsersRepository;
 use crate::domain::entities::users::Users;
@@ -18,8 +19,9 @@ impl UsersRepositoryInMemory {
     }
 }
 
+#[async_trait]
 impl Repository<Users> for UsersRepositoryInMemory {
-    fn find_all(&self) -> Vec<Users> {
+    async fn find_all(&self) -> Vec<Users> {
         if self.len() > 10 {
             panic!("Too many users in memory, please clear the memory before running the tests");
         }
@@ -27,14 +29,14 @@ impl Repository<Users> for UsersRepositoryInMemory {
         self.users.clone()
     }
 
-    fn find_by_id(&self, id: UniqueEntityID) -> Result<Users, RepositoryError> {
+    async fn find_by_id(&self, id: UniqueEntityID) -> Result<Users, RepositoryError> {
         match self.users.iter().find(|v| v.id == id) {
             Some(user) => Ok(user.clone()),
             None => Err(RepositoryError::NotFound("User not found".to_string())),
         }
     }
 
-    fn save(&mut self, entity: Users) -> Result<Users, RepositoryError> {
+    async fn save(&mut self, entity: Users) -> Result<Users, RepositoryError> {
         match self.users.iter().find(|v| v.id == entity.id) {
             Some(_) => Err(RepositoryError::AlreadyExists("User already exists".to_string())),
             None => {
@@ -44,7 +46,7 @@ impl Repository<Users> for UsersRepositoryInMemory {
         }
     }
 
-    fn delete(&mut self, id: UniqueEntityID) -> Result<(), RepositoryError> {
+    async fn delete(&mut self, id: UniqueEntityID) -> Result<(), RepositoryError> {
         let len = self.len();
         self.users.retain(|v| v.id != id);
         if len != self.len() {
@@ -55,8 +57,10 @@ impl Repository<Users> for UsersRepositoryInMemory {
     }
 }
 
+#[async_trait]
+
 impl UsersRepository for UsersRepositoryInMemory {
-    fn find_by_email(&self, email: EmailEntity) -> Option<Users> {
+    async fn find_by_email(&self, email: EmailEntity) -> Option<Users> {
         self.users.iter().find(|v| v.email == email).cloned()
     }
 }
