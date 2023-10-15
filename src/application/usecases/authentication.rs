@@ -16,6 +16,45 @@ pub struct SignInInput {
     pub password: String,
 }
 
+pub enum AuthUseCaseError {
+    UserNotFound,
+    InvalidPassword,
+    UserAlreadyExists,
+    Domain(DomainError),
+}
+
+impl From<AuthUseCaseError> for AppError {
+    fn from(error: AuthUseCaseError) -> Self {
+        match error {
+            AuthUseCaseError::UserNotFound => AppError::new("User not found", 404, None),
+            AuthUseCaseError::InvalidPassword => AppError::new("Invalid password", 401, None),
+            AuthUseCaseError::UserAlreadyExists => AppError::new("User already exists", 400, None),
+            AuthUseCaseError::Domain(domain) => AppError::new("User domain error", 442, Some(domain))
+        }
+    }
+}
+
+impl From<RepositoryError> for AuthUseCaseError {
+    fn from(error: RepositoryError) -> Self {
+        match error {
+            RepositoryError::NotFound(_) => AuthUseCaseError::UserNotFound,
+            RepositoryError::AlreadyExists(_) => AuthUseCaseError::UserAlreadyExists,
+            RepositoryError::Domain(error) => AuthUseCaseError::Domain(error),
+        }
+    }
+}
+
+impl Debug for AuthUseCaseError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            AuthUseCaseError::UserNotFound => write!(f, "User not found"),
+            AuthUseCaseError::InvalidPassword => write!(f, "Invalid password"),
+            AuthUseCaseError::UserAlreadyExists => write!(f, "User already exists"),
+            AuthUseCaseError::Domain(error) => write!(f, "{:?}", error),
+        }
+    }
+}
+
 impl AuthUseCase {
     pub fn new(users_repository: UsersRepositoryContract) -> Self {
         Self {
