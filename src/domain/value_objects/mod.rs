@@ -1,5 +1,7 @@
 use crate::domain::errors::domain_error::DomainError;
 
+mod __tests__;
+
 pub mod unique_id;
 pub mod url;
 pub mod color;
