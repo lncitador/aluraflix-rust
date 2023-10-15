@@ -12,3 +12,5 @@ time = { version = "0.3.29", features = ["macros", "serde", "formatting", "parsi
 serde = { version = "1.0.188", features = ["derive"] }
 lazy_static = "1.4.0"
 regex = "1.10.0"
+async-trait = { version = "0.1.73", features = [] }
+tokio = { version = "1.33.0", features = ["full"] }
