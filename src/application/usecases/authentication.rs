@@ -62,7 +62,7 @@ impl AuthUseCase {
         }
     }
 
-    pub fn sign_in(&self, input: SignInInput) -> Result<String, AuthUseCaseError> {
+    pub async fn sign_in(&self, input: SignInInput) -> Result<String, AuthUseCaseError> {
         let email = match EmailEntity::new(Some(&input.email)) {
             Ok(email) => email,
             Err(_) => return Err(AuthUseCaseError::UserNotFound),
@@ -72,7 +72,7 @@ impl AuthUseCase {
 
         let user = match users_repository.lock() {
             Ok(repo) => {
-                match repo.find_by_email(email) {
+                match repo.find_by_email(email).await {
                     Some(user) => user,
                     None => return Err(AuthUseCaseError::UserNotFound),
                 }
@@ -93,7 +93,7 @@ impl AuthUseCase {
         Ok("User logged in".to_string())
     }
 
-    pub fn sign_up(&mut self, input: UsersInput) -> Result<Users, AuthUseCaseError> {
+    pub async fn sign_up(&mut self, input: UsersInput) -> Result<Users, AuthUseCaseError> {
         let email = match EmailEntity::new(Some(&input.email)) {
             Ok(email) => email,
             Err(error) => return Err(AuthUseCaseError::Domain(error)),
@@ -102,7 +102,7 @@ impl AuthUseCase {
 
         let user_already_exists = match self.users_repository.lock() {
             Ok(repo) => {
-                match repo.find_by_email(email) {
+                match repo.find_by_email(email).await {
                     Some(_) => true,
                     None => false,
                 }
@@ -125,7 +125,7 @@ impl AuthUseCase {
 
         match self.users_repository.lock() {
             Ok(mut repo) => {
-                match repo.save(user) {
+                match repo.save(user).await {
                     Ok(user) => Ok(user),
                     Err(error) => Err(AuthUseCaseError::from(error)),
                 }
