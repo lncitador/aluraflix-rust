@@ -15,7 +15,7 @@ mod test_auth_use_case {
     }
 
     async fn setup_sut() -> Sut {
-        let mut users_repository = Arc::new(Mutex::new(UsersRepositoryInMemory::new()));
+        let users_repository = Arc::new(Mutex::new(UsersRepositoryInMemory::new()));
 
         let initial_user = Users::new(&UsersInput {
             name: "John Doe".to_string(),

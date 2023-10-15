@@ -68,7 +68,7 @@ impl AuthUseCase {
             Err(_) => return Err(AuthUseCaseError::UserNotFound),
         };
 
-        let mut users_repository = self.users_repository.clone();
+        let users_repository = self.users_repository.clone();
 
         let user = match users_repository.lock() {
             Ok(repo) => {
