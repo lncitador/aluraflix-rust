@@ -1,2 +1,2 @@
-mod authentication;
+pub mod authentication;
 mod test_authentication;
