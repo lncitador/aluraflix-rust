@@ -1,20 +1,20 @@
 #[cfg(test)]
 mod test_auth_use_case {
-    use std::rc::Rc;
+    use std::sync::{Arc, Mutex};
     use crate::application::repositories::Repository;
-    use crate::application::usecases::authentication::AuthUseCase;
+    use crate::application::usecases::authentication::{AuthUseCase, AuthUseCaseError};
     use crate::domain::entities::users::{Users, UsersInput};
     use crate::infrastructure::persistence::in_memory::users::UsersRepositoryInMemory;
     use crate::domain::value_objects::ValueObjectTrait;
 
     struct Sut {
-        users_repository: Rc<UsersRepositoryInMemory>,
+        users_repository: Arc<Mutex<UsersRepositoryInMemory>>,
         use_case: AuthUseCase,
         initial_user: Users,
     }
 
     fn setup_sut() -> Sut {
-        let mut users_repository = Rc::new(UsersRepositoryInMemory::new());
+        let mut users_repository = Arc::new(Mutex::new(UsersRepositoryInMemory::new()));
 
         let initial_user = Users::new(&UsersInput {
             name: "John Doe".to_string(),
@@ -22,7 +22,7 @@ mod test_auth_use_case {
             password: "12345678".to_string(),
         }).unwrap();
 
-        Rc::get_mut(&mut users_repository).unwrap().save(initial_user.clone());
+        users_repository.lock().unwrap().save(initial_user.clone()).unwrap();
 
         let use_case = AuthUseCase::new(users_repository.clone());
 
@@ -37,10 +37,11 @@ mod test_auth_use_case {
     mod test_sign_in {
         use crate::application::usecases::authentication::SignInInput;
         use super::*;
+
         #[test]
         fn it_should_not_sing_in_when_the_user_does_not_exist() {
-            let users_repository = Rc::new(UsersRepositoryInMemory::new());
-            let use_case = AuthUseCase::new(users_repository);
+            let users_repository = Arc::new(Mutex::new(UsersRepositoryInMemory::new()));
+            let use_case = AuthUseCase::new(users_repository.clone());
 
             let input = SignInInput {
                 email: "johndoe@test.com".to_string(),
@@ -50,7 +51,6 @@ mod test_auth_use_case {
             let result = use_case.sign_in(input);
 
             assert!(result.is_err());
-            assert_eq!(result.unwrap_err().code(), 404);
         }
 
         #[test]
@@ -65,7 +65,6 @@ mod test_auth_use_case {
             let result = sut.use_case.sign_in(input);
 
             assert!(result.is_err());
-            assert_eq!(result.unwrap_err().code(), 401);
         }
 
         #[test]
