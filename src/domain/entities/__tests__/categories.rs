@@ -1,6 +1,5 @@
 #[cfg(test)]
 mod test_categories_entity {
-    use uuid::Uuid;
     use crate::domain::entities::categories::{Categories, CategoriesInput};
 
     const NAME: &str = "Category name";
