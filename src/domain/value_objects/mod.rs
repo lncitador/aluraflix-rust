@@ -8,8 +8,9 @@ pub mod color;
 pub mod email;
 
 use serde::{Serialize, Deserialize};
+use sqlx::{FromRow, Type};
 
-#[derive(Serialize, Deserialize, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Clone, FromRow)]
 pub struct ValueObject<T> {
     value: T,
 }

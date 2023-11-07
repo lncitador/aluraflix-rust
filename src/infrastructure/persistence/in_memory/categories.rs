@@ -46,13 +46,13 @@ impl Repository<Categories> for CategoriesRepositoryInMemory {
         }
     }
 
-    async fn delete(&mut self, id: UniqueEntityID) -> Result<(), RepositoryError> {
-        let len = self.len();
-        self.categories.retain(|v| v.id != id);
-        if len != self.len() {
-            Ok(())
-        } else {
-            Err(RepositoryError::NotFound("Category not found".to_string()))
+    async fn delete(&mut self, id: UniqueEntityID) -> Option<RepositoryError> {
+        match self.categories.iter().position(|v| v.id == id) {
+            Some(index) => {
+                self.categories.remove(index);
+                None
+            }
+            None => Some(RepositoryError::NotFound("Category not found".to_string())),
         }
     }
 }

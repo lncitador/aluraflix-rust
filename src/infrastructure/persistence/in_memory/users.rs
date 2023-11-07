@@ -46,13 +46,13 @@ impl Repository<Users> for UsersRepositoryInMemory {
         }
     }
 
-    async fn delete(&mut self, id: UniqueEntityID) -> Result<(), RepositoryError> {
-        let len = self.len();
-        self.users.retain(|v| v.id != id);
-        if len != self.len() {
-            Ok(())
-        } else {
-            Err(RepositoryError::NotFound("User not found".to_string()))
+    async fn delete(&mut self, id: UniqueEntityID) -> Option<RepositoryError> {
+        match self.users.iter().position(|v| v.id == id) {
+            Some(index) => {
+                self.users.remove(index);
+                None
+            }
+            None => Some(RepositoryError::NotFound("User not found".to_string())),
         }
     }
 }

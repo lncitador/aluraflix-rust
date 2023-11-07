@@ -38,5 +38,5 @@ pub trait Repository<T> {
     async fn find_all(&self) -> Vec<T>;
     async fn find_by_id(&self, id: UniqueEntityID) -> Result<T, RepositoryError>;
     async fn save(&mut self, entity: T) -> Result<T, RepositoryError>;
-    async fn delete(&mut self, id: UniqueEntityID) -> Result<(), RepositoryError>;
+    async fn delete(&mut self, id: UniqueEntityID) -> Option<RepositoryError>;
 }

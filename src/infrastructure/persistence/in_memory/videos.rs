@@ -46,13 +46,13 @@ impl Repository<Videos> for VideosRepositoryInMemory {
         }
     }
 
-    async fn delete(&mut self, id: UniqueEntityID) -> Result<(), RepositoryError> {
-        let len = self.len();
-        self.videos.retain(|v| v.id != id);
-        if len != self.len() {
-            Ok(())
-        } else {
-            Err(RepositoryError::NotFound("Video not found".to_string()))
+    async fn delete(&mut self, id: UniqueEntityID) -> Option<RepositoryError> {
+        match self.videos.iter().position(|v| v.id == id) {
+            Some(index) => {
+                self.videos.remove(index);
+                None
+            }
+            None => Some(RepositoryError::NotFound("Video not found".to_string())),
         }
     }
 }

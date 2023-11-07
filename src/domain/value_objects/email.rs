@@ -40,6 +40,14 @@ impl TryFrom<EmailEntity> for String {
     }
 }
 
+impl TryFrom<&str> for EmailEntity {
+    type Error = DomainError;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        EmailEntity::new(Some(value))
+    }
+}
+
 impl From<String> for EmailEntity {
     fn from(value: String) -> Self {
         EmailEntity::new(Some(value.as_str())).unwrap()

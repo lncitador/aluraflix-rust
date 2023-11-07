@@ -1,9 +1,11 @@
 use serde::{Deserialize, Serialize};
+use sqlx::FromRow;
 use time::{Date, OffsetDateTime};
 use crate::domain::errors::domain_error::{as_descriptions, DomainError};
 use crate::domain::value_objects::email::EmailEntity;
 use crate::domain::value_objects::unique_id::UniqueEntityID;
 use crate::domain::value_objects::ValueObjectTrait;
+use crate::infrastructure::persistence::database::users::UsersModel;
 
 #[derive(Deserialize)]
 pub struct UsersInput {
@@ -12,7 +14,7 @@ pub struct UsersInput {
     pub password: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, FromRow)]
 pub struct Users {
     pub id: UniqueEntityID,
     pub name: String,
@@ -76,5 +78,18 @@ impl Users {
             created_at: now,
             updated_at: now,
         })
+    }
+}
+
+impl From<UsersModel> for Users {
+    fn from(model: UsersModel) -> Self {
+        Self {
+            id: UniqueEntityID::new(Some(model.id.to_string().as_str())).unwrap(),
+            name: model.name,
+            email: EmailEntity::new(Some(model.email.as_str())).unwrap(),
+            password: model.password,
+            created_at: model.created_at,
+            updated_at: model.updated_at,
+        }
     }
 }
